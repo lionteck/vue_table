@@ -1,0 +1,24 @@
+<script type="text/x-template" id="operator-viewer-table">
+    <div>
+        <div style="margin-bottom:25px;"><input v-model="date_id" type="text" /><button @click="loadTable">visualizza</button></div>
+        <table>
+            <thead>
+                <tr>
+                    <th v-for="(table_header, index) in table_headers" v-if="table_headers!=null">{{table_header}}
+                        <select v-model="filter[table_header]" :filter="table_header" @change="changeFilter">
+                            <option value="0"></option>
+                            <option v-for="(table_header_value, index) in table_header_values[table_header]" :value="index">{{index}}</option>
+                        </select>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(table_data, index) in table_datas_filtered" v-if="table_datas_filtered!=null" :index="index">
+                    <td v-for="(t, index) in table_data" :index="index">{{t}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</script>
+<script src="{{default_url}}assets/js/{{name_component}}-component.js?ver={{random}}"></script>

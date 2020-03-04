@@ -1,7 +1,7 @@
 var baseurl = "https://" + document.location.host + "/wp-admin/admin-ajax.php";
 
-Vue.component('operator-viewer-table', {
-    template: '#operator-viewer-table',
+Vue.component('operator-viewer-cart', {
+    template: '#operator-viewer-cart',
     data: function() {
         return {
             date_id: null,
@@ -9,9 +9,7 @@ Vue.component('operator-viewer-table', {
             table_datas_filtered: null,
             table_headers: null,
             table_header_values: null,
-            filter: {},
-            params:params,
-            query:query
+            filter: {}
         }
 
     },
@@ -57,40 +55,31 @@ Vue.component('operator-viewer-table', {
                 _this.table_headers = success.table_headers;
                 _this.table_datas_filtered = success.table_datas;
                 _this.table_header_values = success.values;
-                Vue.nextTick(function () {
-                    $("table").resizableColumns();
-                });
             })
 
 
         },
-        loadTableQuery: function(query) {
-            let params="";
-            if(this.params!=""){
-                params='&'+jQuery.param( this.params);
-            }
-            let cat_prom = this.callApi(baseurl + "?action=table_query&query=" + this.query+params , {});
+        loadChart: function(){
+            let cat_prom = this.callApi(baseurl + "?action=chart_vendite", {});
             const _this = this;
             cat_prom.then((success) => {
-                console.log(success)
-                success.table_headers.forEach(element => {
-                    console.log(element)
-                    _this.filter[element] = "0";
-                });
-                _this.table_datas = success.table_datas;
-                _this.table_headers = success.table_headers;
-                _this.table_datas_filtered = success.table_datas;
-                _this.table_header_values = success.values;
                 Vue.nextTick(function () {
-                    $("table").resizableColumns();
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    var chart = new Chart(ctx, {
+                        // The type of chart we want to create
+                        type: 'line',
+                       
+                        // The data for our dataset
+                        data: success,
+
+                        // Configuration options go here
+                        options: {}
+                    });
                 });
-            })
-
-
+            });
         }
     },
     created: function() {
-        if(query!="")
-            this.loadTableQuery()      
+        this.loadChart();
     }
 })
